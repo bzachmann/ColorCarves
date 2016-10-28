@@ -1,2 +1,2 @@
 eclipse.preferences.version=1
-libraries=["Adafruit BNO055",{"package"\:"arduino","platform"\:"avr","library"\:"Wire"},"Adafruit Unified Sensor"]
+libraries=["Adafruit BNO055",{"package"\:"arduino","platform"\:"avr","library"\:"Wire"},"Adafruit NeoPixel","Adafruit Unified Sensor"]
