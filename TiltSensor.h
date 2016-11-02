@@ -9,21 +9,29 @@
 #define TILTSENSOR_H_
 
 #include <Adafruit_BNO055.h>
+#include "CircularBuffer.h"
+
+typedef enum {
+	AXISX,
+	AXISY,
+	AXISZ
+}AxisType;
 
 #define SENSOR_ID	21
-
+#define AXIS		AXISZ //0 = X, 1 = Y, 2 = Z
 
 class TiltSensor {
 public:
 	TiltSensor();
-	virtual ~TiltSensor();
 
 	bool begin();
+	void update();
+	int32_t getAngle();
+
 
 private:
 	Adafruit_BNO055 bno;
-
-
+	CircularBuffer buffer;
 };
 
 #endif /* TILTSENSOR_H_ */

@@ -3,57 +3,75 @@
 #include <Adafruit_BNO055.h>
 
 #include "ColorScale.h"
+#include "TiltSensor.h"
 
 
 rgbVal rgbValues;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, 8);
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
+TiltSensor sensor = TiltSensor();
+uint16_t tenTimer = 0;
+uint64_t hundredTimer = 0;
 
 void setup(void)
 {
   Serial.begin(9600);
-  Serial.println("Orientation Sensor Test"); Serial.println("");
+  Serial.println("Orientation Sensor Test");
+  Serial.println("");
 
   strip.begin();
   strip.setBrightness(50);
+  strip.setPixelColor(0, 255, 0, 0);
   strip.show();
 
   /* Initialise the sensor */
-  if(!bno.begin())
+  if(!sensor.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
-
-  bno.setExtCrystalUse(true);
-
   delay(1000);
+  tenTimer = millis();
+  hundredTimer = millis();
 }
 
 void loop(void)
 {
-	sensors_event_t event;
-	bno.getEvent(&event);
-	float value = event.orientation.z;
-	if(value > 50)
+//	strip.setPixelColor(0, 255, 0, 0);
+//	strip.show();
+//	delay(500);
+//	strip.setPixelColor(0, 0, 255, 0);
+//	strip.show();
+//	delay(500);
+//	strip.setPixelColor(0,0,0,255);
+//	strip.show();
+//	delay(500);
+
+	if(millis() - tenTimer > 10)
 	{
-		value = 50;
+		sensor.update();
+		tenTimer = millis();
+		Serial.println("10 ms");
 	}
-	else if(value < -50)
+	if(millis() - hundredTimer > 50)
 	{
-		value = -50;
+		int32_t angle = sensor.getAngle();
+		if(angle > 500)
+		{
+			angle = 500;
+		}
+		else if(angle < -500)
+		{
+			angle = -500;
+		}
+		uint16_t mappedVal = (uint16_t)(map(angle, -500, 500, 0, 765));
+		rgbValues = ColorScale::getRGB(mappedVal, 0);
+	    strip.setPixelColor(0, rgbValues.red, rgbValues.green, rgbValues.blue);
+	    strip.show();
+	    hundredTimer = millis();
+	    Serial.print("50 ms  -   ");
 	}
-	uint16_t mappedVal = (uint16_t)(map(value, -50, 50, 0, 765));
-
-	rgbValues = ColorScale::getRGB(mappedVal, 0);
-	strip.setPixelColor(0, rgbValues.red, rgbValues.green, rgbValues.blue);
-	strip.show();
-	value++;
-
-	delay(100);
-
-
 }
+
 
 
