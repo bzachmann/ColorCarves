@@ -12,6 +12,8 @@ TiltSensor sensor = TiltSensor();
 uint16_t tenTimer = 0;
 uint64_t hundredTimer = 0;
 
+void SerialTest();
+
 void setup(void)
 {
   Serial.begin(9600);
@@ -51,7 +53,7 @@ void loop(void)
 	{
 		sensor.update();
 		tenTimer = millis();
-		Serial.println("10 ms");
+		//Serial.println("10 ms");
 	}
 	if(millis() - hundredTimer > 50)
 	{
@@ -69,8 +71,25 @@ void loop(void)
 	    strip.setPixelColor(0, rgbValues.red, rgbValues.green, rgbValues.blue);
 	    strip.show();
 	    hundredTimer = millis();
-	    Serial.print("50 ms  -   ");
+	    //Serial.println("50 ms  -   ");
+	    SerialTest();
 	}
+}
+
+void SerialTest()
+{
+	uint8_t buffer[10];
+
+	while(Serial.available())
+	{
+		//Serial.write(Serial.read());
+		uint8_t numRead = Serial.readBytesUntil('A',buffer,10);
+		if(buffer[0] == 0x21)
+		{
+			Serial.write(numRead);
+		}
+	}
+
 }
 
 
