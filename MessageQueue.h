@@ -1,20 +1,20 @@
 /*
- * MesssageQueue.h
+ * MessageQueue.h
  *
  *  Created on: Nov 6, 2016
  *      Author: bzachmann
  */
 
-#ifndef MESSSAGEQUEUE_H_
-#define MESSSAGEQUEUE_H_
+#ifndef MESSAGEQUEUE_H_
+#define MESSAGEQUEUE_H_
 
 #include "CMPMessage.h"
 
 #define QUEUELENGTH 10
 
-class MesssageQueue {
+class MessageQueue {
 public:
-	MesssageQueue();
+	MessageQueue();
 
 	bool enqueue(CMPMessage message);
 	CMPMessage dequeue(bool &ok);
@@ -31,4 +31,4 @@ private:
 
 };
 
-#endif /* MESSSAGEQUEUE_H_ */
+#endif /* MESSAGEQUEUE_H_ */

@@ -5,14 +5,14 @@
  *      Author: bzachmann
  */
 
-#include "MesssageQueue.h"
+#include "MessageQueue.h"
 
-MesssageQueue::MesssageQueue() {
+MessageQueue::MessageQueue() {
 	iFront = 0;
 	iBack = -1;
 }
 
-bool MesssageQueue::enqueue(CMPMessage message)
+bool MessageQueue::enqueue(CMPMessage message)
 {
 	bool success;
 	if(iBack != iFront)
@@ -40,7 +40,7 @@ bool MesssageQueue::enqueue(CMPMessage message)
 	}
 	return success;
 }
-CMPMessage MesssageQueue::dequeue(bool &ok)
+CMPMessage MessageQueue::dequeue(bool &ok)
 {
 	ok = false;
 	CMPMessage returnMessage;
@@ -67,7 +67,7 @@ CMPMessage MesssageQueue::dequeue(bool &ok)
 	return returnMessage;
 }
 
-bool MesssageQueue::isEmpty()
+bool MessageQueue::isEmpty()
 {
 	return (iBack == -1);
 }

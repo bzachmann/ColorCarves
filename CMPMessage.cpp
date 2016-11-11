@@ -7,22 +7,25 @@
 
 #include "CMPMessage.h"
 
+typedef void (*msg_callback)(CMPMessage msg);
+
 CMPMessage::CMPMessage() {
-	id = 0xFFFF;
+	msgId = 0xFFFF;
 	for(uint8_t i = 0; i < 8; i++)
 	{
 		data[i] = 0;
 	}
+	callback_func = 0;
 }
 
-void CMPMessage::setID(uint16_t _id)
+void CMPMessage::setID(uint16_t m_id)
 {
-	id = _id;
+	msgId = m_id;
 }
 
 uint16_t CMPMessage::getID()
 {
-	return id;
+	return msgId;
 }
 
 bool CMPMessage::setByte(uint8_t index, uint8_t value)
@@ -48,4 +51,14 @@ uint8_t CMPMessage::getByte(uint8_t index)
 	{
 		return data[index];
 	}
+}
+
+void CMPMessage::registerCallback(msg_callback func)
+{
+	callback_func = func;
+}
+
+msg_callback CMPMessage::callback()
+{
+	return callback_func;
 }

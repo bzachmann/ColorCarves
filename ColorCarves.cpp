@@ -4,6 +4,7 @@
 
 #include "ColorScale.h"
 #include "TiltSensor.h"
+#include "CMP.h"
 
 
 rgbVal rgbValues;
@@ -12,10 +13,9 @@ TiltSensor sensor = TiltSensor();
 uint16_t tenTimer = 0;
 uint64_t hundredTimer = 0;
 
-void SerialTest();
-
 void setup(void)
 {
+  pinMode(13, OUTPUT);
   Serial.begin(9600);
   Serial.println("Orientation Sensor Test");
   Serial.println("");
@@ -35,6 +35,7 @@ void setup(void)
   delay(1000);
   tenTimer = millis();
   hundredTimer = millis();
+  cmp_initialize();
 }
 
 void loop(void)
@@ -71,25 +72,9 @@ void loop(void)
 	    strip.setPixelColor(0, rgbValues.red, rgbValues.green, rgbValues.blue);
 	    strip.show();
 	    hundredTimer = millis();
+	    cmp_update();
 	    //Serial.println("50 ms  -   ");
-	    SerialTest();
 	}
-}
-
-void SerialTest()
-{
-	uint8_t buffer[10];
-
-	while(Serial.available())
-	{
-		//Serial.write(Serial.read());
-		uint8_t numRead = Serial.readBytesUntil('A',buffer,10);
-		if(buffer[0] == 0x21)
-		{
-			Serial.write(numRead);
-		}
-	}
-
 }
 
 
