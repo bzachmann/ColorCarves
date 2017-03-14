@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
+#define CMPMESSAGE_DATALENGTH 8
 
 class CMPMessage {
 public:

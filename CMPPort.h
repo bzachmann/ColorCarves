@@ -11,9 +11,7 @@
 #include "MessageQueue.h"
 #include "CMPMessage.h"
 
-#define ESCAPE						0xE0
 #define HEADERBYTE					0xE1
-#define ENDBYTE						0xE2
 
 #define REGISTERED_RECORDS_MAX		15
 #define BUFFER_MAX					10
@@ -32,6 +30,7 @@ public:
 	void registerMessage(CMPMessage msg);
 	void handleNextCallback();
 	void handleAllCallbacks();
+	void send(CMPMessage msg);
 
 
 private:
@@ -47,9 +46,6 @@ private:
 	uint8_t record_index;
 
 	bool header_rcvd;
-	bool accept_next_byte;
-
-
 };
 
 #endif /* CMPPORT_H_ */

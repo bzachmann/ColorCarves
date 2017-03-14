@@ -13,10 +13,17 @@ CMPPort msgPort;
 void msg_callback_TESTMSG(CMPMessage msg)
 {
 	digitalWrite(13, !digitalRead(13));
-	for(uint8_t i = 0; i < 8; i++)
-	{
-		Serial.write(msg.data[i]);
-	}
+	CMPMessage testMsg2 = CMPMessage();
+	testMsg2.setID(0x1235);
+	testMsg2.setByte(0, 0x10);
+	testMsg2.setByte(1, 0x20);
+	testMsg2.setByte(2, 0x30);
+	testMsg2.setByte(3, 0x40);
+	testMsg2.setByte(4, 0x50);
+	testMsg2.setByte(5, 0x60);
+	testMsg2.setByte(6, 0x70);
+	testMsg2.setByte(7, 0x80);
+	msgPort.send(testMsg2);
 }
 
 void msg_init_TESTMSG()
