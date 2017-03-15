@@ -10,6 +10,7 @@
 
 #include <Adafruit_BNO055.h>
 #include "CircularBuffer.h"
+#include "StripColorSettings.h"
 
 typedef enum {
 	AXISX,
@@ -27,6 +28,7 @@ public:
 	bool begin();
 	void update();
 	int32_t getAngle();
+	void updateColors(StripColorSettings &strip);
 
 
 private:

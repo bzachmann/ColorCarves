@@ -49,3 +49,21 @@ int32_t TiltSensor::getAngle()
 {
 	return buffer.average();
 }
+
+void TiltSensor::updateColors(StripColorSettings &stripSettings)
+{
+	int32_t angle = getAngle();
+	if(angle > 500)
+	{
+		angle = 500;
+	}
+	else if(angle < -500)
+	{
+		angle = -500;
+	}
+	uint16_t mappedVal = (uint16_t)(map(angle, -500, 500, 0, 765));
+	for(int i = 0; i < NUM_LEDS; i++)
+	{
+		stripSettings.setValue(i, mappedVal);
+	}
+}
