@@ -9,6 +9,23 @@
 #include "CMPMessage.h"
 
 CMPPort msgPort;
+StripColorSettings stripSettings = StripColorSettings();
+
+void msg_callback_LEDSET(CMPMessage msg)
+{
+	uint8_t index = msg.getByte(0);
+	uint16_t value = ((uint16_t)(msg.getByte(1) << 8)) | ((uint16_t)(msg.getByte(2)));
+	stripSettings.setOffset(index, value);
+	msgPort.send(msg);
+}
+
+void msg_init_LEDSET()
+{
+	CMPMessage ledsetMsg = CMPMessage();
+	ledsetMsg.setID(ID_LEDSET);
+	ledsetMsg.registerCallback(&msg_callback_LEDSET);
+	msgPort.registerMessage(ledsetMsg);
+}
 
 void msg_callback_TESTMSG(CMPMessage msg)
 {
@@ -29,8 +46,7 @@ void msg_callback_TESTMSG(CMPMessage msg)
 void msg_init_TESTMSG()
 {
 	CMPMessage testMsg = CMPMessage();
-	//testMsg.setID(ID_TESTMSG);
-	testMsg.setID(0x1234);
+	testMsg.setID(ID_TESTMSG);
 	testMsg.registerCallback(&msg_callback_TESTMSG);
 	msgPort.registerMessage(testMsg);
 }
@@ -47,6 +63,7 @@ void cmp_update()
 void cmp_initialize()
 {
 	msgPort = CMPPort();
+	msg_init_LEDSET();
 	msg_init_TESTMSG();
 }
 
