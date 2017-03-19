@@ -7,18 +7,30 @@
 
 #include "CMPPort.h"
 
-CMPPort::CMPPort() {
+CMPPort::CMPPort()
+/*******************************************************************************************
+ *
+ * 	Constructor creates a new Message Queue sets default variable values
+ *
+ *******************************************************************************************/
+{
 	msgQueue = MessageQueue();
 	buffer_index = 0;
 	record_index = 0;
 	header_rcvd = false;
-	//for(uint8_t i = 0; i < 10; i++)
-	//{
-	//	buffer[i] = 0xFF;
-	//}
 }
 
 void CMPPort::in(uint8_t inByte)
+/*******************************************************************************************
+ *
+ * 	This method takes in one byte of data and adds the byte to the data stream. The bytes
+ * 	that enter the stream must correctly follow the CMP protocol. If the byte is an invalid
+ * 	byte based on the previous sequence, the byte along with the message that was being
+ * 	constructed are discarded.  If the byte is the last byte in a valid message and the
+ * 	entire message is valid, the message is added to the Message
+ * 	Queue where their corresponding callback functions are handled later.
+ *
+ *******************************************************************************************/
 {
 	if ((inByte == HEADERBYTE) && (!header_rcvd))
 	{
@@ -43,6 +55,12 @@ void CMPPort::in(uint8_t inByte)
 }
 
 void CMPPort::registerMessage(CMPMessage msg)
+/*******************************************************************************************
+ *
+ * 	Adds a record (id and corresponding callback function) to message records array.
+ * 	This array is searched for callback functions when a callback needs to be handled.
+ *
+ *******************************************************************************************/
 {
 	if(record_index != REGISTERED_RECORDS_MAX)
 	{
@@ -55,6 +73,13 @@ void CMPPort::registerMessage(CMPMessage msg)
 }
 
 void CMPPort::handleNextCallback()
+/*******************************************************************************************
+ *
+ * 	Dequeues the top message in the queue, searches the msg_records array for a callback
+ * 	function that corresponds to the id of the message that was just dequeued, and calls that
+ * 	function.
+ *
+ *******************************************************************************************/
 {
 	if(!msgQueue.isEmpty())
 	{
@@ -75,6 +100,11 @@ void CMPPort::handleNextCallback()
 }
 
 void CMPPort::handleAllCallbacks()
+/*******************************************************************************************
+ *
+ * 	calls handleNextCallback until the message queue is empty
+ *
+ *******************************************************************************************/
 {
 	while(!msgQueue.isEmpty())
 	{
@@ -83,6 +113,11 @@ void CMPPort::handleAllCallbacks()
 }
 
 void CMPPort::send(CMPMessage msg)
+/*******************************************************************************************
+ *
+ * 	Sends the given CMP Message following the CMP Protocol
+ *
+ *******************************************************************************************/
 {
 	Serial.write((uint8_t)HEADERBYTE);
 
@@ -96,6 +131,12 @@ void CMPPort::send(CMPMessage msg)
 }
 
 void CMPPort::parseAndQueue()
+/*******************************************************************************************
+ *
+ * 	Constructs a CMP message based on what is currently in the receive buffer and adds
+ * 	message to the message queue
+ *
+ *******************************************************************************************/
 {
 	if(buffer_index == BUFFER_MAX)
 	{
@@ -121,13 +162,15 @@ void CMPPort::parseAndQueue()
 	resetBuffer();
 
 }
-void CMPPort::resetBuffer()
-{
-	//for(uint8_t i = 0; i < 10; i++)
-	//{
-	//	buffer[i] = 0xFF;
-	//}
 
+void CMPPort::resetBuffer()
+/*******************************************************************************************
+ *
+ * 	Resets the buffer state so that it is ready to receive next message.
+ * 	(Protocol sequence starts over)
+ *
+ *******************************************************************************************/
+{
 	header_rcvd = false;
 	buffer_index = 0;
 }

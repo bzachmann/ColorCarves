@@ -12,6 +12,12 @@ CMPPort msgPort;
 StripColorSettings stripSettings = StripColorSettings();
 
 void msg_callback_LEDSET(CMPMessage msg)
+/*******************************************************************************************
+ *
+ * 	callback message that is called if the LEDSET message is received
+ *
+ *******************************************************************************************/
+
 {
 	uint8_t index = msg.getByte(0);
 	uint16_t value = ((uint16_t)(msg.getByte(1) << 8)) | ((uint16_t)(msg.getByte(2)));
@@ -20,6 +26,11 @@ void msg_callback_LEDSET(CMPMessage msg)
 }
 
 void msg_init_LEDSET()
+/*******************************************************************************************
+ *
+ * 	Registers the LEDSET message so that the CMP Port will act on it if received
+ *
+ *******************************************************************************************/
 {
 	CMPMessage ledsetMsg = CMPMessage();
 	ledsetMsg.setID(ID_LEDSET);
@@ -28,6 +39,11 @@ void msg_init_LEDSET()
 }
 
 void msg_callback_TESTMSG(CMPMessage msg)
+/*******************************************************************************************
+ *
+ * 	callback message that is called if the TEST message is received
+ *
+ *******************************************************************************************/
 {
 	digitalWrite(13, !digitalRead(13));
 	CMPMessage testMsg2 = CMPMessage();
@@ -44,6 +60,11 @@ void msg_callback_TESTMSG(CMPMessage msg)
 }
 
 void msg_init_TESTMSG()
+/*******************************************************************************************
+ *
+ * 	Registers the TEST message so that the CMP Port will act on it if received
+ *
+ *******************************************************************************************/
 {
 	CMPMessage testMsg = CMPMessage();
 	testMsg.setID(ID_TESTMSG);
@@ -52,7 +73,16 @@ void msg_init_TESTMSG()
 }
 
 void cmp_update()
+/*******************************************************************************************
+ *
+ * 	This function will take any data that is available on the Serial Port and pass it to
+ * 	msgPort using the .in() function.  After all data has been processed, the msgPort
+ * 	will call any of the callback functions that are needed to be called
+ * 	based on the previous data input and any registered ID's that are present
+ *
+ *******************************************************************************************/
 {
+	//TODO - add a msgPort.available boolean that is false if the messageque is full if false then skip the .in & handle callbacks
 	while(Serial.available())
 	{
 		msgPort.in((uint8_t)(Serial.read()));
@@ -60,7 +90,15 @@ void cmp_update()
 	msgPort.handleAllCallbacks();
 }
 
+
+//TODO - pass in a software serial to listen on for the .in() source
 void cmp_initialize()
+/*******************************************************************************************
+ *
+ * 	Calling this function sets creates a new CMP Port and initializes any messages that
+ * 	need to be initialized
+ *
+ *******************************************************************************************/
 {
 	msgPort = CMPPort();
 	msg_init_LEDSET();

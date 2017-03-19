@@ -9,7 +9,13 @@
 
 typedef void (*msg_callback)(CMPMessage msg);
 
-CMPMessage::CMPMessage() {
+CMPMessage::CMPMessage()
+/*******************************************************************************************
+ *
+ * 	constructor sets msgID to 0xFFFF,sets all data to 0, and sets function pointer to 0
+ *
+ *******************************************************************************************/
+{
 	msgId = 0xFFFF;
 	for(uint8_t i = 0; i < 8; i++)
 	{
@@ -19,16 +25,31 @@ CMPMessage::CMPMessage() {
 }
 
 void CMPMessage::setID(uint16_t m_id)
+/*******************************************************************************************
+ *
+ * 	sets the id of the message
+ *
+ *******************************************************************************************/
 {
 	msgId = m_id;
 }
 
 uint16_t CMPMessage::getID()
+/*******************************************************************************************
+ *
+ * 	sets the id of the message
+ *
+ *******************************************************************************************/
 {
 	return msgId;
 }
 
 bool CMPMessage::setByte(uint8_t index, uint8_t value)
+/*******************************************************************************************
+ *
+ * 	sets the byte at index index to value value
+ *
+ *******************************************************************************************/
 {
 	if(index > 7)
 	{
@@ -42,6 +63,11 @@ bool CMPMessage::setByte(uint8_t index, uint8_t value)
 }
 
 uint8_t CMPMessage::getByte(uint8_t index)
+/*******************************************************************************************
+ *
+ * 	gets the value at the given byte index
+ *
+ *******************************************************************************************/
 {
 	if(index > 7)
 	{
@@ -54,11 +80,21 @@ uint8_t CMPMessage::getByte(uint8_t index)
 }
 
 void CMPMessage::registerCallback(msg_callback func)
+/*******************************************************************************************
+ *
+ * 	sets the address of the callback function
+ *
+ *******************************************************************************************/
 {
 	callback_func = func;
 }
 
 msg_callback CMPMessage::callback()
+/*******************************************************************************************
+ *
+ *  returns a function pointer to the register callback function
+ *
+ *******************************************************************************************/
 {
 	return callback_func;
 }

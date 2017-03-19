@@ -7,12 +7,23 @@
 
 #include "MessageQueue.h"
 
-MessageQueue::MessageQueue() {
+MessageQueue::MessageQueue()
+/*******************************************************************************************
+ *
+ * 	Constructor sets the queue in a state that flags it as empty (iBack = -1)
+ *
+ *******************************************************************************************/
+{
 	iFront = 0;
 	iBack = -1;
 }
 
 bool MessageQueue::enqueue(CMPMessage message)
+/*******************************************************************************************
+ *
+ * 	adds the message to the queue. Returns false if the queue was full and could not be added
+ *
+ *******************************************************************************************/
 {
 	bool success;
 	if(iBack != iFront)
@@ -41,6 +52,12 @@ bool MessageQueue::enqueue(CMPMessage message)
 	return success;
 }
 CMPMessage MessageQueue::dequeue(bool &ok)
+/*******************************************************************************************
+ *
+ * 	removes the top message from the queue. Sets the bool flag to false if the queue was empty
+ * 	and could not remove anymore messages
+ *
+ *******************************************************************************************/
 {
 	ok = false;
 	CMPMessage returnMessage;
@@ -68,6 +85,11 @@ CMPMessage MessageQueue::dequeue(bool &ok)
 }
 
 bool MessageQueue::isEmpty()
+/*******************************************************************************************
+ *
+ * 	Returns whether or not the queue is empty
+ *
+ *******************************************************************************************/
 {
 	return (iBack == -1);
 }
