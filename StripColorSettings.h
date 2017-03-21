@@ -27,6 +27,8 @@ public:
 	uint16_t getValue(uint8_t index);
 	bool setOffset(uint8_t index, uint16_t value);
 	uint16_t getOffset(uint8_t index);
+	bool setBrightness(uint8_t value);
+	uint8_t getBrightness();
 
 	void clearStates();
 	void clearValues();
@@ -38,6 +40,9 @@ public:
 
 private:
 	ledSetting leds[NUM_LEDS];
+
+	uint8_t numLeds;
+	uint8_t brightness;
 };
 
 #endif /* STRIPCOLORSETTINGS_H_ */

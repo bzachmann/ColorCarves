@@ -10,15 +10,15 @@
 
 #include <Arduino.h>
 #include "CMPPort.h"
-#include "StripColorSettings.h";
+#include "StripColorSettings.h"
 
 #define ID_TESTMSG	0x1234
 #define ID_LEDSET	0x0011
-
 
 
 extern void cmp_update();
 extern void cmp_initialize();
 
 extern StripColorSettings stripSettings;
+
 #endif /* CMP_H_ */

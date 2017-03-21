@@ -7,6 +7,7 @@
 
 #include "CMP.h"
 #include "CMPMessage.h"
+//#include "Globals.h"
 
 CMPPort msgPort;
 StripColorSettings stripSettings = StripColorSettings();

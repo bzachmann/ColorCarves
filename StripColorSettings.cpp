@@ -13,6 +13,8 @@ StripColorSettings::StripColorSettings()
 	clearValues();
 	clearOffsets();
 
+	uint8_t numLeds = NUM_LEDS;
+	uint8_t brightness = 0;
 }
 
 bool StripColorSettings::setState(uint8_t index, bool state)
@@ -76,6 +78,17 @@ uint16_t StripColorSettings::getOffset(uint8_t index)
 		retVal = leds[index].offset;
 	}
 	return retVal;
+}
+
+bool StripColorSettings::setBrightness(uint8_t value)
+{
+	brightness = value;
+	return true;
+}
+
+uint8_t StripColorSettings::getBrightness()
+{
+	return brightness;
 }
 
 void StripColorSettings::clearStates()

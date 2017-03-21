@@ -1,8 +1,11 @@
 #include <Arduino.h>
 #include <Adafruit_BNO055.h>
 
+//#include "Globals.h"
+
 #include "NeoPixelStrip.h"
 #include "TiltSensor.h"
+#include "SpeedSensor.h"
 #include "CMP.h"
 #include "StripColorSettings.h"
 
@@ -11,8 +14,11 @@ TiltSensor sensor = TiltSensor();
 uint16_t tenTimer = 0;
 uint64_t hundredTimer = 0;
 NeoPixelStrip strip = NeoPixelStrip(NUM_LEDS, 6);
+SpeedSensor speedSensor = SpeedSensor();
 
 bool tiltEnable = 1;
+bool patternEnable = 0;
+bool speedBrightnessEnable = 1;
 
 void setup(void)
 {
@@ -42,6 +48,7 @@ void loop(void)
 	if(millis() - tenTimer > 10)
 	{
 		sensor.update();
+		speedSensor.update();
 		tenTimer = millis();
 	}
 
@@ -51,6 +58,23 @@ void loop(void)
 		if(tiltEnable)
 		{
 			sensor.updateColors(stripSettings);
+		}
+
+		if(patternEnable)
+		{
+
+		}
+		else
+		{
+			for(int i = 0; i < NUM_LEDS; i++)
+			{
+				stripSettings.setState(i, true);
+			}
+		}
+
+		if(speedBrightnessEnable)
+		{
+			speedSensor.updateStripBrightness(stripSettings);
 		}
 
 		strip.setStrip(stripSettings);
