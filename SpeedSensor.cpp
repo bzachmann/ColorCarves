@@ -11,16 +11,15 @@
 SpeedSensor::SpeedSensor()
 {
 	speed = 0;
-
 }
 
-void SpeedSensor::update()
+void SpeedSensor::update(double speed_MperS)
 {
-  int voltage = analogRead(A0);
-  speed = (uint16_t)map(voltage, 0, 1023, 0, 765);
+	int speedInt = (int)(speed_MperS * 100);
+    speed = (uint16_t)map(speedInt, 0, 900, 0, 765);
 }
 
-uint16_t SpeedSensor::getSpeed()
+double SpeedSensor::getSpeed()
 {
 	return speed;
 }

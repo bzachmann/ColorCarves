@@ -11,17 +11,19 @@
 #include "StripColorSettings.h"
 #include <stdint.h>
 
+
+
 class SpeedSensor {
 public:
 	SpeedSensor();
 
-	void update();
-	uint16_t getSpeed();
+	void update(double speed_MperS);
+	double getSpeed();
 	void updateStripBrightness(StripColorSettings &stripSettings);
 	void updateStripStates(StripColorSettings &stripSettings);
 
 private:
-	uint16_t speed;
+	double speed;
 
 };
 
