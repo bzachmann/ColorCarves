@@ -10,7 +10,7 @@
 StripColorSettings::StripColorSettings()
 {
 	clearStates();
-	clearValues();
+	clearBaseValue();
 	clearOffsets();
 
 	uint8_t numLeds = NUM_LEDS;
@@ -38,25 +38,15 @@ bool StripColorSettings::getState(uint8_t index)
 	return retVal;
 }
 
-bool StripColorSettings::setValue(uint8_t index, uint16_t value)
+bool StripColorSettings::setBaseValue(uint16_t value)
 {
-	bool retVal = false;
-	if(index < NUM_LEDS)
-	{
-		leds[index].value = value;
-		retVal = true;
-	}
-	return retVal;
+	baseValue = value;
+	return true;
 }
 
-uint16_t StripColorSettings::getValue(uint8_t index)
+uint16_t StripColorSettings::getBaseValue()
 {
-	uint16_t retVal = 0xFFFF;
-	if(index < NUM_LEDS)
-	{
-		retVal = leds[index].value;
-	}
-	return retVal;
+	return baseValue;
 }
 
 bool StripColorSettings::setOffset(uint8_t index, uint16_t value)
@@ -100,12 +90,9 @@ void StripColorSettings::clearStates()
 	return;
 }
 
-void StripColorSettings::clearValues()
+void StripColorSettings::clearBaseValue()
 {
-	for(int i = 0; i < NUM_LEDS; i++)
-	{
-		leds[i].value == 0;
-	}
+	baseValue = 0;
 	return;
 }
 

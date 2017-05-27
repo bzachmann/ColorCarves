@@ -23,7 +23,7 @@ void msg_callback_LEDSET(CMPMessage msg)
 	uint8_t index = msg.getByte(0);
 	uint16_t value = ((uint16_t)(msg.getByte(1) << 8)) | ((uint16_t)(msg.getByte(2)));
 	stripSettings.setOffset(index, value);
-	msgPort.send(msg);
+	//msgPort.send(msg);
 }
 
 void msg_init_LEDSET()

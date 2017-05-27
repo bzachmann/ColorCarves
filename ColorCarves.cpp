@@ -35,7 +35,7 @@ SpeedSensor speedSensor = SpeedSensor();
 
 bool tiltEnable = 1;
 bool patternEnable = 0;
-bool speedBrightnessEnable = 1;
+bool speedBrightnessEnable = 0;
 
 void setup(void)
 {
@@ -65,6 +65,7 @@ void setup(void)
 
 void loop(void)
 {
+	cmp_update();
 
 	if(millis() - tenTimer > 10)
 	{
@@ -97,12 +98,15 @@ void loop(void)
 		{
 			speedSensor.updateStripBrightness(stripSettings);
 		}
+		else
+		{
+			stripSettings.setBrightness(128);
+		}
 
 		strip.setStrip(stripSettings);
 		strip.show();
 
 	    hundredTimer = millis();
-	    cmp_update();
 	}
 }
 

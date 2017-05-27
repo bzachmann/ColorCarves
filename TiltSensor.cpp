@@ -62,8 +62,5 @@ void TiltSensor::updateColors(StripColorSettings &stripSettings)
 		angle = -500;
 	}
 	uint16_t mappedVal = (uint16_t)(map(angle, -500, 500, 0, 765));
-	for(int i = 0; i < NUM_LEDS; i++)
-	{
-		stripSettings.setValue(i, mappedVal);
-	}
+	stripSettings.setBaseValue(mappedVal);
 }

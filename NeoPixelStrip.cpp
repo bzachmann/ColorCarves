@@ -21,7 +21,7 @@ void NeoPixelStrip::setStrip(StripColorSettings &stripSettings)
 	{
 		if(stripSettings.getState(i))
 		{
-			rgbVal rgbValues = ColorScale::getRGB(stripSettings.getValue(i), stripSettings.getOffset(i));
+			rgbVal rgbValues = ColorScale::getRGB(stripSettings.getBaseValue(), stripSettings.getOffset(i));
 			setPixelColor(i, rgbValues.red, rgbValues.green, rgbValues.blue);
 		}
 		else
