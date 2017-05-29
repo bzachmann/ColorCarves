@@ -19,6 +19,6 @@
 extern void cmp_update();
 extern void cmp_initialize();
 
-extern StripColorSettings stripSettings;
+
 
 #endif /* CMP_H_ */

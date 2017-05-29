@@ -12,6 +12,8 @@
 #include "CircularBuffer.h"
 #include "StripColorSettings.h"
 
+#define DEFAULT_TILT	383
+
 typedef enum {
 	AXISX,
 	AXISY,

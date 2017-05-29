@@ -52,15 +52,22 @@ int32_t TiltSensor::getAngle()
 
 void TiltSensor::updateColors(StripColorSettings &stripSettings)
 {
-	int32_t angle = getAngle();
-	if(angle > 500)
+	if(stripSettings.getTiltEnable())
 	{
-		angle = 500;
+		int32_t angle = getAngle();
+		if(angle > 500)
+		{
+			angle = 500;
+		}
+		else if(angle < -500)
+		{
+			angle = -500;
+		}
+		uint16_t mappedVal = (uint16_t)(map(angle, -500, 500, 0, 765));
+		stripSettings.setBaseValue(mappedVal);
 	}
-	else if(angle < -500)
+	else
 	{
-		angle = -500;
+		stripSettings.setBaseValue(DEFAULT_TILT);
 	}
-	uint16_t mappedVal = (uint16_t)(map(angle, -500, 500, 0, 765));
-	stripSettings.setBaseValue(mappedVal);
 }

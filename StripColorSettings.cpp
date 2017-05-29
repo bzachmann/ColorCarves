@@ -13,8 +13,11 @@ StripColorSettings::StripColorSettings()
 	clearBaseValue();
 	clearOffsets();
 
-	uint8_t numLeds = NUM_LEDS;
-	uint8_t brightness = 0;
+	numLeds = NUM_LEDS;
+	brightness = 128;
+	tiltEnable = 1;
+	patternEnable = 0;
+	speedBrightnessEnable = 1;
 }
 
 bool StripColorSettings::setState(uint8_t index, bool state)
@@ -81,11 +84,68 @@ uint8_t StripColorSettings::getBrightness()
 	return brightness;
 }
 
+bool StripColorSettings::setTiltEnable(bool val)
+{
+	tiltEnable = val;
+	return true;
+}
+
+bool StripColorSettings::getTiltEnable()
+{
+	return tiltEnable;
+}
+
+bool StripColorSettings::setPatternEnable(bool val)
+{
+	patternEnable = val;
+	return true;
+}
+
+bool StripColorSettings::getPatternEnable()
+{
+	return patternEnable;
+}
+
+bool StripColorSettings::setSpeedBrightnessEnable(bool val)
+{
+	speedBrightnessEnable = val;
+	return true;
+}
+
+bool StripColorSettings::getSpeedBrightnessEnable()
+{
+	return speedBrightnessEnable;
+}
+
+bool StripColorSettings::setError(errorCause cause, errorType type)
+{
+	uint8_t ucause = ((uint8_t)cause) & 0x0F;
+	uint8_t utype = ((uint8_t)type) & 0x0F;
+
+	for(uint8_t i = 0; i < NUM_LEDS; i++)
+	{
+		leds[i].offset = 0;
+		leds[i].state = 0;
+	}
+	baseValue = 0;
+	brightness = 64;
+
+	if(NUM_LEDS >= 8)
+	{
+		for(uint8_t i = 0; i < 4; i++)
+			{
+				leds[i].state = (ucause >> i) & 0x01;
+				leds[i + 4].state = (utype >> i) & 0x01;
+			}
+	}
+}
+
+
 void StripColorSettings::clearStates()
 {
 	for(int i = 0; i < NUM_LEDS; i++)
 	{
-		leds[i].state == false;
+		leds[i].state = true;
 	}
 	return;
 }
@@ -100,7 +160,7 @@ void StripColorSettings::clearOffsets()
 {
 	for(int i = 0; i < NUM_LEDS; i++)
 	{
-		leds[i].offset == 0;
+		leds[i].offset = 0;
 	}
 	return;
 }

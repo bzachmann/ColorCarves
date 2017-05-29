@@ -18,6 +18,25 @@ class StripColorSettings {
 		uint16_t offset;
 	}ledSetting;
 
+	typedef struct _eeStripSettings{
+		bool tiltEnable;
+		bool speedBrightnessEnable;
+		bool speedPatternEnable;
+		uint8_t brightness;
+		ledSetting leds[NUM_LEDS];
+	} eeStripSettings;
+
+public:
+	enum errorCause {
+		BNO055 = 1,
+		NUM_ERRORCAUSES,
+	};
+
+	enum errorType {
+		NOT_CONNECTED = 1,
+		NUM_ERRORTYPES,
+	};
+
 public:
 	StripColorSettings();
 	bool setState(uint8_t index, bool state);
@@ -28,6 +47,14 @@ public:
 	uint16_t getOffset(uint8_t index);
 	bool setBrightness(uint8_t value);
 	uint8_t getBrightness();
+	bool setTiltEnable(bool val);
+	bool getTiltEnable();
+	bool setPatternEnable(bool val);
+	bool getPatternEnable();
+	bool setSpeedBrightnessEnable(bool val);
+	bool getSpeedBrightnessEnable();
+
+	bool setError(errorCause cause, errorType type);
 
 	void clearStates();
 	void clearBaseValue();
@@ -43,6 +70,10 @@ private:
 	uint16_t baseValue;
 	uint8_t numLeds;
 	uint8_t brightness;
+
+	bool tiltEnable;
+	bool speedBrightnessEnable;
+	bool patternEnable;
 };
 
 #endif /* STRIPCOLORSETTINGS_H_ */

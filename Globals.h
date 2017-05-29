@@ -7,7 +7,4 @@
 extern StripColorSettings stripSettings;
 
 
-//declarations
-StripColorSettings stripSettings = StripColorSettings();
-
 #endif /* GLOBALS_H_ */

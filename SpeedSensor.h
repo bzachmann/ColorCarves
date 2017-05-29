@@ -11,13 +11,16 @@
 #include "StripColorSettings.h"
 #include <stdint.h>
 
+extern void setupInterrupts();
+extern void setTimerConversionFactor();
+extern void setWheelConversionFactor();
 
 
 class SpeedSensor {
 public:
 	SpeedSensor();
 
-	void update(double speed_MperS);
+	void update();
 	double getSpeed();
 	void updateStripBrightness(StripColorSettings &stripSettings);
 	void updateStripStates(StripColorSettings &stripSettings);
