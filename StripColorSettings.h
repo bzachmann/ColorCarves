@@ -9,8 +9,10 @@
 #define STRIPCOLORSETTINGS_H_
 
 #include <stdint.h>
+#include <eeprom.h>
 
-#define NUM_LEDS	33
+#define NUM_LEDS		33
+#define CHECKSUM_GOOD	0xEE
 
 class StripColorSettings {
 	typedef struct ledSetting{
@@ -24,6 +26,7 @@ class StripColorSettings {
 		bool speedPatternEnable;
 		uint8_t brightness;
 		ledSetting leds[NUM_LEDS];
+		uint8_t checksumReserve;
 	} eeStripSettings;
 
 public:

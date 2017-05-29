@@ -108,7 +108,7 @@ ISR(TIMER1_CAPT_vect)
 		elapsedCount = countNew - countOld;
 		elapsedTime_us = ((((double)elapsedCount) * tickTimePS)/1000000.0);
 		speed_MperS = speed_conversion_factor / elapsedTime_us;
-		Serial.println(speed_MperS);
+		debugSerial.println(speed_MperS);
 		interruptCount = 0;
 	}
 }

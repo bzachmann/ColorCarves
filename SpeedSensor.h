@@ -8,6 +8,7 @@
 #ifndef SPEEDSENSOR_H_
 #define SPEEDSENSOR_H_
 
+#include "globals.h"
 #include "StripColorSettings.h"
 #include <stdint.h>
 
