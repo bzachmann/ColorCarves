@@ -62,10 +62,9 @@ public:
 	void clearStates();
 	void clearBaseValue();
 	void clearOffsets();
-	bool restoreOffsets();
-	bool restoreOffset(uint8_t index);
-	bool saveOffsets();
-	bool saveOffset(uint8_t index);
+	bool restoreSettings();
+	bool saveSettings();
+
 
 private:
 	ledSetting leds[NUM_LEDS];

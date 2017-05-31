@@ -17,6 +17,7 @@ SoftwareSerial debugSerial(3,4); //rx, tx
 
 uint16_t tenTimer = 0;
 uint64_t hundredTimer = 0;
+uint64_t testTimer = 0;
 
 void setup(void)
 {
@@ -26,7 +27,7 @@ void setup(void)
 
   if(!sensor.begin())
   {
-    debugSerial.print("no BNO055 detected\n");
+    debugSerial.print(F("no BNO055 detected\n"));
     stripSettings.setError(StripColorSettings::BNO055, StripColorSettings::NOT_CONNECTED);
     strip.setStrip(stripSettings);
     strip.show();
@@ -35,11 +36,13 @@ void setup(void)
 
   tenTimer = millis();
   hundredTimer = millis();
+  testTimer = millis();
   cmp_initialize();
 
   setupInterrupts();
   setTimerConversionFactor();
   setWheelConversionFactor();
+  stripSettings.restoreSettings();
 }
 
 void loop(void)
@@ -64,6 +67,12 @@ void loop(void)
 		strip.show();
 
 	    hundredTimer = millis();
+	}
+
+	if(millis() - testTimer > 5000)
+	{
+		stripSettings.saveSettings();
+		testTimer = millis();
 	}
 }
 

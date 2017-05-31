@@ -6,6 +6,7 @@
  */
 
 #include "StripColorSettings.h"
+#include "globals.h"
 
 StripColorSettings::StripColorSettings()
 {
@@ -18,6 +19,8 @@ StripColorSettings::StripColorSettings()
 	tiltEnable = 1;
 	patternEnable = 0;
 	speedBrightnessEnable = 1;
+
+	//restoreSettings();
 }
 
 bool StripColorSettings::setState(uint8_t index, bool state)
@@ -165,25 +168,18 @@ void StripColorSettings::clearOffsets()
 	return;
 }
 
-bool StripColorSettings::restoreOffsets()
+bool StripColorSettings::restoreSettings()
 {
-	//TODO - implement save and restore from eeprom
-	return false;
-}
-
-bool StripColorSettings::restoreOffset(uint8_t index)
-{
-	//TODO - implement save and restore from eeprom
-	return false;
-}
-
-bool StripColorSettings::saveOffsets()
-{
-	bool dif = false;
+	//TODO - eeStripSettings in both restor and save methods take up a lot of RAM
 	eeStripSettings eeStrip;
-	EEPROM.get(0, eeStrip);
+	bool retVal = false;
+
+	debugSerial.println(F("--Restoring EEPROM Routine--"));
+	debugSerial.println(F("getting EEPROM"));
+	EEPROM.get(0,eeStrip);
 
 	//calculate current checksum
+	debugSerial.println(F("calculating checksum"));
 	uint8_t * eePtr = (uint8_t*)(&eeStrip);
 	uint16_t eeBytes = sizeof(eeStrip);
 	uint8_t eeChecksum = *eePtr;
@@ -195,9 +191,71 @@ bool StripColorSettings::saveOffsets()
 		eePtr++;
 	}
 
+	debugSerial.print(F("checksum is: "));
+	debugSerial.print(eeChecksum, HEX);
+	debugSerial.println(F(""));
+
 	//if good, compare
 	if(eeChecksum == CHECKSUM_GOOD)
 	{
+		debugSerial.println(F("Checksum good, Restoring"));
+		tiltEnable = eeStrip.tiltEnable;
+		speedBrightnessEnable = eeStrip.speedBrightnessEnable;
+		patternEnable = eeStrip.speedPatternEnable;
+
+		if(!speedBrightnessEnable)//update brightness only if not changed by speed sensor
+		{
+			brightness = eeStrip.brightness;
+		}
+
+		for(uint8_t i = 0; i < NUM_LEDS; i++)
+		{
+			 leds[i].offset = eeStrip.leds[i].offset;
+			if(!patternEnable) //update states only if not changed by pattern
+			{
+				leds[i].state = eeStrip.leds[i].state;
+			}
+		}
+	}
+	else
+	{
+		debugSerial.println(F("Bad Checksum, not restoring"));
+		retVal = false;
+	}
+
+	return retVal;
+}
+
+bool StripColorSettings::saveSettings()
+{
+	bool dif = false;
+	eeStripSettings eeStrip;
+
+	debugSerial.println(F("--Saving EEPROM Routine--"));
+	debugSerial.println(F("getting EEPROM"));
+	EEPROM.get(0, eeStrip);
+
+	//calculate current checksum
+	debugSerial.println(F("calculating checksum"));
+	uint8_t * eePtr = (uint8_t*)(&eeStrip);
+	uint16_t eeBytes = sizeof(eeStrip);
+	uint8_t eeChecksum = *eePtr;
+	eePtr ++;
+
+	for(uint16_t i = 1; i < eeBytes; i++)
+	{
+		eeChecksum = eeChecksum ^ *eePtr;
+		eePtr++;
+	}
+
+	debugSerial.print(F("checksum is: "));
+	debugSerial.print(eeChecksum, HEX);
+	debugSerial.println(F(""));
+
+	//if good, compare
+	if(eeChecksum == CHECKSUM_GOOD)
+	{
+		debugSerial.println(F("Checksum good!"));
 		bool rootDif = (eeStrip.tiltEnable != tiltEnable) ||
 				(eeStrip.speedBrightnessEnable != speedBrightnessEnable) ||
 				(eeStrip.speedPatternEnable != patternEnable) ||
@@ -216,15 +274,18 @@ bool StripColorSettings::saveOffsets()
 		}
 
 		dif = rootDif || ledOffsetDif || ledStateDif;
+
 	}
 	else //otherwise its whack and need to replace. mark as different
 	{
+		debugSerial.println(F("Bad Checksum, flagging EEPROM rewrite!"));
 		dif = true;
 	}
 
 
-	if(dif)//repalce if different
+	if(dif)//replace if different
 	{
+		debugSerial.println(F("EEPROM different from current settings, saving values"));
 		eeStrip.tiltEnable = tiltEnable;
 		eeStrip.speedBrightnessEnable = speedBrightnessEnable;
 		eeStrip.speedPatternEnable = patternEnable;
@@ -244,6 +305,7 @@ bool StripColorSettings::saveOffsets()
 		}
 
 		//calculate new checkSum reserve so that the checksum will equal CHECKSUM_GOOD
+		debugSerial.println(F("Calculating checksum reserve"));
 		eePtr = (uint8_t*)(&eeStrip);
 		uint8_t xorTemp = *eePtr;
 		eePtr ++;
@@ -255,15 +317,13 @@ bool StripColorSettings::saveOffsets()
 		}
 
 		eeStrip.checksumReserve = xorTemp ^ CHECKSUM_GOOD;
+		debugSerial.print(F("Checksum reserve is: "));
+		debugSerial.print(eeStrip.checksumReserve, HEX);
+		debugSerial.println(F(""));
 
 		//write to eeprom
+		debugSerial.println(F("Writing to EEPROM now!"));
 		EEPROM.put(0, eeStrip);
 	}
-
-}
-
-bool StripColorSettings::saveOffset(uint8_t index)
-{
-	//TODO - implement save and restore from eeprom
-	return false;
+	return true;
 }
