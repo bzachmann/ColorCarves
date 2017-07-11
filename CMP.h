@@ -12,8 +12,8 @@
 #include "CMPPort.h"
 #include "StripColorSettings.h"
 
-#define ID_TESTMSG	0x1234
-#define ID_LEDSET	0x0011
+#define ID_TESTMSG	0xF0
+#define ID_LEDSET	0x10
 
 
 extern void cmp_update();

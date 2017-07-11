@@ -16,15 +16,15 @@ CMPMessage::CMPMessage()
  *
  *******************************************************************************************/
 {
-	msgId = 0xFFFF;
-	for(uint8_t i = 0; i < 8; i++)
+	msgId = 0xFF;
+	for(uint8_t i = 0; i < CMPMESSAGE_DATALENGTH; i++)
 	{
-		data[i] = 0;
+		data[i] = 0xFF;
 	}
 	callback_func = 0;
 }
 
-void CMPMessage::setID(uint16_t m_id)
+void CMPMessage::setID(uint8_t m_id)
 /*******************************************************************************************
  *
  * 	sets the id of the message
@@ -34,7 +34,7 @@ void CMPMessage::setID(uint16_t m_id)
 	msgId = m_id;
 }
 
-uint16_t CMPMessage::getID()
+uint8_t CMPMessage::getID()
 /*******************************************************************************************
  *
  * 	sets the id of the message
@@ -51,7 +51,7 @@ bool CMPMessage::setByte(uint8_t index, uint8_t value)
  *
  *******************************************************************************************/
 {
-	if(index > 7)
+	if(!(index < CMPMESSAGE_DATALENGTH))
 	{
 		return false;
 	}
@@ -69,7 +69,7 @@ uint8_t CMPMessage::getByte(uint8_t index)
  *
  *******************************************************************************************/
 {
-	if(index > 7)
+	if(!(index < CMPMESSAGE_DATALENGTH))
 	{
 		return 0xFF;
 	}

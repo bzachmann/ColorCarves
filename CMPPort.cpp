@@ -121,9 +121,7 @@ void CMPPort::send(CMPMessage msg)
 {
 	Serial.write((uint8_t)HEADERBYTE);
 
-	uint16_t id = msg.getID();
-	Serial.write((uint8_t)((id >> 8) & 0xFF));
-	Serial.write((uint8_t)(id & 0xFF));
+	Serial.write(msg.getID());
 	for(int i = 0; i < CMPMESSAGE_DATALENGTH; i++)
 	{
 		Serial.write(msg.getByte(i));
@@ -140,22 +138,12 @@ void CMPPort::parseAndQueue()
 {
 	if(buffer_index == BUFFER_MAX)
 	{
-		CMPMessage tempMsg = CMPMessage();
-		uint16_t buffer0 = buffer[0];
-		uint16_t buffer1 = buffer[1];
-		buffer0 = buffer0 << 8;
-		buffer1 = buffer1 & 0xFF;
-		uint16_t msgId = (buffer0 + buffer1);
-		tempMsg.setID(msgId);
+		CMPMessage tempMsg;
+		tempMsg.setID(buffer[0]);
 
-		tempMsg.data[0] = buffer[2];
-		tempMsg.data[1] = buffer[3];
-		tempMsg.data[2] = buffer[4];
-		tempMsg.data[3] = buffer[5];
-		tempMsg.data[4] = buffer[6];
-		tempMsg.data[5] = buffer[7];
-		tempMsg.data[6] = buffer[8];
-		tempMsg.data[7] = buffer[9];
+		tempMsg.setByte(0, buffer[1]);
+		tempMsg.setByte(1, buffer[2]);
+		tempMsg.setByte(2, buffer[3]);
 
 		msgQueue.enqueue(tempMsg);
 	}

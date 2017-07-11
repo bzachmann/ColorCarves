@@ -14,12 +14,12 @@
 #define HEADERBYTE					0xE1
 
 #define REGISTERED_RECORDS_MAX		15
-#define BUFFER_MAX					10
+#define BUFFER_MAX					4
 
 class CMPPort {
 
 	typedef struct{
-		uint16_t id;
+		uint8_t id;
 		CMPMessage::msg_callback callback_func;
 	}msg_record;
 
