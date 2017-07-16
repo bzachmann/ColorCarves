@@ -13,6 +13,8 @@
 
 #define NUM_LEDS		33
 #define CHECKSUM_GOOD	0xEE
+#define TIMEOUT_SAVE_MS	500
+#define CHECK_SAVE_MS	100
 
 class StripColorSettings {
 	typedef struct ledSetting{
@@ -62,8 +64,12 @@ public:
 	void clearStates();
 	void clearBaseValue();
 	void clearOffsets();
+
+	void flagForSave();
+
 	bool restoreSettings();
 	bool saveSettings();
+	void run(uint16_t elapsedMs);
 
 
 private:
@@ -73,9 +79,15 @@ private:
 	uint8_t numLeds;
 	uint8_t brightness;
 
+	uint16_t saveTimer;
+	bool saveFlag;
+
 	bool tiltEnable;
 	bool speedBrightnessEnable;
 	bool patternEnable;
+
+private:
+	void updateTimer(uint16_t elapsedMs);
 };
 
 #endif /* STRIPCOLORSETTINGS_H_ */

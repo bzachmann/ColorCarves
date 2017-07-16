@@ -49,14 +49,18 @@ void loop(void)
 {
 	cmp_update();
 
-	if(millis() - tenTimer > 10)
+	uint16_t elapsed = millis() - tenTimer;
+	if(elapsed > 10)
 	{
 		sensor.update();
 		speedSensor.update();
+		stripSettings.run(elapsed);
+
 		tenTimer = millis();
 	}
 
-	if(millis() - hundredTimer > 50)
+	elapsed = millis() - hundredTimer;
+	if(elapsed > 50)
 	{
 		sensor.updateColors(stripSettings);
 
@@ -69,9 +73,10 @@ void loop(void)
 	    hundredTimer = millis();
 	}
 
-	if(millis() - testTimer > 5000)
+	elapsed = millis() - testTimer;
+	if(elapsed > 5000)
 	{
-		stripSettings.saveSettings();
+
 		testTimer = millis();
 	}
 }

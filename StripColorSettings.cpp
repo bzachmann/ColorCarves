@@ -19,6 +19,8 @@ StripColorSettings::StripColorSettings()
 	tiltEnable = 1;
 	patternEnable = 0;
 	speedBrightnessEnable = 1;
+	saveFlag = false;
+	saveTimer = 0;
 
 	//restoreSettings();
 }
@@ -168,6 +170,12 @@ void StripColorSettings::clearOffsets()
 	return;
 }
 
+void StripColorSettings::flagForSave()
+{
+	saveFlag = true;
+	saveTimer = 0;
+}
+
 bool StripColorSettings::restoreSettings()
 {
 	//TODO - eeStripSettings in both restor and save methods take up a lot of RAM
@@ -228,6 +236,13 @@ bool StripColorSettings::restoreSettings()
 
 bool StripColorSettings::saveSettings()
 {
+	if(saveTimer < TIMEOUT_SAVE_MS)
+	{
+		return false;
+	}
+	saveFlag = false;
+	saveTimer = 0;
+
 	bool dif = false;
 	eeStripSettings eeStrip;
 
@@ -326,4 +341,25 @@ bool StripColorSettings::saveSettings()
 		EEPROM.put(0, eeStrip);
 	}
 	return true;
+}
+
+void StripColorSettings::run(uint16_t elapsedMs)
+{
+	if(saveFlag)
+	{
+		updateTimer(elapsedMs);
+	}
+	saveSettings();
+}
+
+void StripColorSettings::updateTimer(uint16_t elapsedMs)
+{
+	if((saveTimer + elapsedMs) > saveTimer)
+	{
+		saveTimer += elapsedMs;
+	}
+	else
+	{
+		saveTimer = 0xFFFF;
+	}
 }
