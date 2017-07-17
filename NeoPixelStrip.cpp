@@ -15,19 +15,34 @@ NeoPixelStrip::NeoPixelStrip(uint16_t n, uint8_t p=6, neoPixelType t=NEO_GRB + N
 
 void NeoPixelStrip::setStrip(StripColorSettings &stripSettings)
 {
+	rgbVal rgbValues;
+
 	setBrightness(stripSettings.getBrightness());
 
-	for(int i = 0; i < NUM_LEDS; i++)
+	if(stripSettings.getPatternEnable())
 	{
-		if(stripSettings.getState(i))
-		{
-			rgbVal rgbValues = ColorScale::getRGB(stripSettings.getBaseValue(), stripSettings.getOffset(i));
-			setPixelColor(i, rgbValues.red, rgbValues.green, rgbValues.blue);
-		}
-		else
+		for(int i = 0; i < NUM_LEDS; i++)
 		{
 			setPixelColor(i, 0, 0, 0);
 		}
+
+		rgbValues = ColorScale::getRGB(stripSettings.getBaseValue(), stripSettings.getOffset(stripSettings.getPatternOnLed()));
+		setPixelColor(stripSettings.getPatternOnLed(), rgbValues.red, rgbValues.green, rgbValues.blue);
+	}
+	else
+	{
+		for(int i = 0; i < NUM_LEDS; i++)
+			{
+				if(stripSettings.getState(i))
+				{
+					rgbValues = ColorScale::getRGB(stripSettings.getBaseValue(), stripSettings.getOffset(i));
+					setPixelColor(i, rgbValues.red, rgbValues.green, rgbValues.blue);
+				}
+				else
+				{
+					setPixelColor(i, 0, 0, 0);
+				}
+			}
 	}
 }
 

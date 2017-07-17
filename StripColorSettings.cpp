@@ -21,6 +21,7 @@ StripColorSettings::StripColorSettings()
 	speedBrightnessEnable = 1;
 	saveFlag = false;
 	saveTimer = 0;
+	patternOnLed = 0;
 
 	//restoreSettings();
 }
@@ -87,6 +88,22 @@ bool StripColorSettings::setBrightness(uint8_t value)
 uint8_t StripColorSettings::getBrightness()
 {
 	return brightness;
+}
+
+bool StripColorSettings::setPatternOnLed(uint8_t value)
+{
+	bool retVal = false;
+	if(value < NUM_LEDS)
+	{
+		patternOnLed = value;
+		retVal = true;
+	}
+	return retVal;
+}
+
+uint8_t StripColorSettings::getPatternOnLed()
+{
+	return patternOnLed;
 }
 
 bool StripColorSettings::setTiltEnable(bool val)

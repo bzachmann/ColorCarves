@@ -9,6 +9,7 @@
 #include <Arduino.h>
 
 #define CLOCK_TICK_TIME_PS 62500
+#define LED_SPACING_MM		(14.5f)
 
 volatile uint16_t count_upper16 = 0;
 volatile uint32_t countOld = 0;
@@ -21,9 +22,14 @@ volatile double speed_conversion_factor = 0;
 volatile double speed_MperS = 0;
 volatile uint8_t interruptCount = 0;
 
+//timer stuff for pattern
+volatile uint16_t sys_counter_us = 0;
+volatile uint16_t sys_counter_ms = 0;
+
 SpeedSensor::SpeedSensor()
 {
 	speed = 0;
+	patternTimer = 0;
 }
 
 void SpeedSensor::update()
@@ -48,18 +54,38 @@ void SpeedSensor::updateStripBrightness(StripColorSettings &stripSettings)
 
 void SpeedSensor::updateStripStates(StripColorSettings &stripSettings)
 {
-	//TODO - implement this function
 	if(stripSettings.getPatternEnable())
 	{
+		uint16_t elapsedPattern_Ms = sys_counter_ms - patternTimer;
+		uint16_t elapsed_LEDS = (uint16_t)((speed_MperS/LED_SPACING_MM)*elapsedPattern_Ms);
+		debugSerial.print("elapsed LEDS: ");
+		debugSerial.println(elapsed_LEDS);
 
+
+		elapsed_LEDS = elapsed_LEDS % NUM_LEDS;
+		uint16_t newPatternOnLed = stripSettings.getPatternOnLed() + elapsed_LEDS;
+		//debugSerial.print("elapsed LEDS: ");
+		//debugSerial.println(elapsed_LEDS);
+
+		if(newPatternOnLed >= NUM_LEDS)
+		{
+			newPatternOnLed -= NUM_LEDS;
+		}
+
+		//debugSerial.print("new pattern on LED: ");
+		//debugSerial.println(newPatternOnLed);
+
+		stripSettings.setPatternOnLed((uint8_t)newPatternOnLed);
 	}
+
+	patternTimer = sys_counter_ms;
 }
 
 void setupInterrupts()
 {
 	TCCR1A = 0;
 	TCCR1B = 0;
-	TCCR1B |= (1 << 7) | (1 << 6) | (2 << 0);  //rising edge detection and clock 8 time prescaler
+	TCCR1B |= (1 << 7) | (1 << 6) | (1 << 0);  //rising edge detection and no time prescaler
 	TIMSK1 |= (1 << 5) | (1 << 0); //enable input capture interrupt and overflow interrupt
 	SREG |= (1 << 7); //global interrupt enable
 }
@@ -108,7 +134,7 @@ ISR(TIMER1_CAPT_vect)
 		elapsedCount = countNew - countOld;
 		elapsedTime_us = ((((double)elapsedCount) * tickTimePS)/1000000.0);
 		speed_MperS = speed_conversion_factor / elapsedTime_us;
-		debugSerial.println(speed_MperS);
+		//debugSerial.println(speed_MperS);
 		interruptCount = 0;
 	}
 }
@@ -116,4 +142,13 @@ ISR(TIMER1_CAPT_vect)
 ISR(TIMER1_OVF_vect)
 {
 	count_upper16++;
+
+	sys_counter_us += 96;
+	sys_counter_ms += 4;
+	if(sys_counter_us > 999);
+	{
+		sys_counter_ms += 1;
+		sys_counter_us -= 1000;
+	}
+
 }

@@ -52,6 +52,8 @@ public:
 	uint16_t getOffset(uint8_t index);
 	bool setBrightness(uint8_t value);
 	uint8_t getBrightness();
+	bool setPatternOnLed(uint8_t value);
+	uint8_t getPatternOnLed();
 	bool setTiltEnable(bool val);
 	bool getTiltEnable();
 	bool setPatternEnable(bool val);
@@ -74,6 +76,7 @@ public:
 
 private:
 	ledSetting leds[NUM_LEDS];
+	uint8_t patternOnLed;
 
 	uint16_t baseValue;
 	uint8_t numLeds;

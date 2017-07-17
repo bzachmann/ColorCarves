@@ -28,6 +28,7 @@ public:
 
 private:
 	double speed;
+	uint16_t patternTimer;
 
 };
 

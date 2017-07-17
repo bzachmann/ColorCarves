@@ -43,11 +43,23 @@ void setup(void)
   setTimerConversionFactor();
   setWheelConversionFactor();
   stripSettings.restoreSettings();
+
+  //TODO - remove this temporary hack
+  stripSettings.setPatternEnable(true);
+  stripSettings.setSpeedBrightnessEnable(false);
+  stripSettings.setBrightness(50);
+  stripSettings.flagForSave();
 }
 
 void loop(void)
 {
 	cmp_update();
+
+	//speedSensor.updateStripBrightness(stripSettings);
+	//speedSensor.updateStripStates(stripSettings);
+
+	//strip.setStrip(stripSettings);
+	//strip.show();
 
 	uint16_t elapsed = millis() - tenTimer;
 	if(elapsed > 10)
@@ -56,12 +68,7 @@ void loop(void)
 		speedSensor.update();
 		stripSettings.run(elapsed);
 
-		tenTimer = millis();
-	}
 
-	elapsed = millis() - hundredTimer;
-	if(elapsed > 50)
-	{
 		sensor.updateColors(stripSettings);
 
 		speedSensor.updateStripBrightness(stripSettings);
@@ -70,13 +77,26 @@ void loop(void)
 		strip.setStrip(stripSettings);
 		strip.show();
 
+		tenTimer = millis();
+	}
+
+	elapsed = millis() - hundredTimer;
+	if(elapsed > 50)
+	{
+		//sensor.updateColors(stripSettings);
+
+		//speedSensor.updateStripBrightness(stripSettings);
+		//speedSensor.updateStripStates(stripSettings);
+
+		//strip.setStrip(stripSettings);
+		//strip.show();
+
 	    hundredTimer = millis();
 	}
 
 	elapsed = millis() - testTimer;
-	if(elapsed > 5000)
+	if(elapsed > 100)
 	{
-
 		testTimer = millis();
 	}
 }
